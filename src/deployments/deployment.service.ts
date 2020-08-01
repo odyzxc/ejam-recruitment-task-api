@@ -1,11 +1,28 @@
-import { IDeployment, deploymentValidationObject } from "./deployment.model";
-import { IDeploymentRepository } from "./deployment.repository";
-import ValidationError from "../core/errors/ValidationError";
 import { ObjectId } from "mongodb";
+import { inject, injectable } from "inversify";
 
+import { IDeployment, deploymentValidationObject } from "./deployment.model";
+import {
+  IDeploymentRepository,
+  DeploymentRepositoryType,
+} from "./deployment.repository";
+import ValidationError from "../core/errors/ValidationError";
+
+export const DeploymentServiceType = Symbol.for("DeploymentService");
+export interface IDeploymentService {
+  get(deploymentId: string): Promise<IDeployment | null>;
+  getAll(): Promise<Array<IDeployment>>;
+  create(deployment: IDeployment): Promise<IDeployment>;
+  delete(deploymentId: string): void;
+}
+
+@injectable()
 export default class DeploymentService {
   private _deploymentRepository: IDeploymentRepository;
-  constructor(deploymentRepository: IDeploymentRepository) {
+  constructor(
+    @inject(DeploymentRepositoryType)
+    deploymentRepository: IDeploymentRepository
+  ) {
     this._deploymentRepository = deploymentRepository;
   }
 

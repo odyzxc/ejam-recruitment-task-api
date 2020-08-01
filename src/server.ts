@@ -1,5 +1,11 @@
 import { connect } from "mongoose";
-import app from "./app";
+import "reflect-metadata";
+import App from "./app";
+import { myContainer } from "./config/inversify.config";
+import {
+  DeploymentsControllerType,
+  IDeploymentsController,
+} from "./deployments/deployment.controller";
 
 // TODO move password to env variables
 const uri =
@@ -10,11 +16,15 @@ const options = {
   useFindAndModify: false,
 };
 
+const deploymentsController = myContainer.get<IDeploymentsController>(
+  DeploymentsControllerType
+);
+
 connect(uri, options)
   .then(() => {
     const port: string | number = process.env.PORT || 5000;
-
-    app.listen(port, () => console.log(`App listening at ${port}`));
+    const application = new App([deploymentsController], port);
+    application.listen();
   })
   .catch((error) => {
     console.log(`Intializing server failed: ${error}`);

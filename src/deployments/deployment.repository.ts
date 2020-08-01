@@ -1,5 +1,7 @@
 import Deployment, { IDeployment } from "./deployment.model";
+import { injectable } from "inversify";
 
+export const DeploymentRepositoryType = Symbol.for("DeploymentRepository");
 export interface IDeploymentRepository {
   get(deploymentId: string): Promise<IDeployment | null>;
   getAll(): Promise<Array<IDeployment>>;
@@ -7,6 +9,7 @@ export interface IDeploymentRepository {
   delete(deploymentId: string): void;
 }
 
+@injectable()
 export default class DeploymentRepository implements IDeploymentRepository {
   async get(deploymentId: string): Promise<IDeployment | null> {
     return await Deployment.findById(deploymentId);
