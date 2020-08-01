@@ -4,7 +4,11 @@ import app from "./app";
 // TODO move password to env variables
 const uri =
   "mongodb+srv://testUser:testPassword@cluster0.42q8l.gcp.mongodb.net/ejam-recruitment-task?retryWrites=true&w=majority";
-const options = { useNewUrlParser: true, useUnifiedTopology: true };
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+};
 
 connect(uri, options)
   .then(() => {
