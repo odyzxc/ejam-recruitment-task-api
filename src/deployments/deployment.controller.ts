@@ -41,9 +41,9 @@ class DeploymentsController implements IDeploymentsController {
 
   async createDeployment(req: express.Request, res: express.Response) {
     try {
-      const deploymentSaved = await this._deploymentService.create(
-        req.body as IDeployment
-      );
+      const deployment = req.body as IDeployment;
+      deployment.deployedAt = new Date();
+      const deploymentSaved = await this._deploymentService.create(deployment);
       return res.status(201).send(deploymentSaved);
     } catch (error) {
       if (error instanceof ValidationError) {
